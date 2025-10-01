@@ -1,3 +1,4 @@
+import time
 
 import sys
 
@@ -7,13 +8,13 @@ def hash_generator(tekstas):
     skaiciai = [ord(c) for c in tekstas]   # skaiciu masyvas
 
     # Atlik keletą matematikos operacijų
-    pirminis = 1109
-    suma = pirminis * pirminis
+    pirminis = 828930167
+    suma = pirminis  # pradinis sumos reikšmė
     for i, skaicius in enumerate(skaiciai):
-        suma = suma ^ skaicius  # XOR su kiekvienu skaičiumi
+        suma = suma ^ (skaicius * pirminis)  # XOR su kiekvienu skaičiumi * pirminis
         suma = (suma * pirminis) % 0x100000000  # daliname is Ox100000000, kad isvengtume per daug simboliu hash
 
-    hash = f"{suma: 08x}" # skaiciaus formatavimas i hex su 8 simboliais
+    hash = f"{suma:08x}" # skaiciaus formatavimas i hex su 8 simboliais
     return hash
 
 if __name__ == "__main__":
@@ -28,4 +29,9 @@ if __name__ == "__main__":
     else:
         tekstas = input("Įvesk tekstą: ")
 
-    print("Tavo hash:", hash_generator(tekstas))
+    start = time.perf_counter_ns()
+    hash = hash_generator(tekstas)
+    end = time.perf_counter_ns()
+    print(f"Hash generavimas užtruko {(end - start)/1000000} sekundžių.")
+
+    print("Tavo hash:", hash)
